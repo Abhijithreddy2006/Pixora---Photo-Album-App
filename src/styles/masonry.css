@@ -1,0 +1,250 @@
+/* ==========================================================================
+   Pinterest-style masonry grid
+   ========================================================================== */
+
+.masonry {
+  --gap: clamp(10px, 1.4vw, 18px);
+  display: grid;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: start;
+}
+
+.masonry__column {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) + 4px);
+  min-width: 0;
+}
+
+/* ---------- Pin ---------- */
+
+.pin {
+  animation: pin-in 0.5s var(--ease-out) both;
+}
+
+@keyframes pin-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pin__media {
+  position: relative;
+  aspect-ratio: var(--ratio);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--skeleton);
+  transform: translateZ(0); /* keeps rounded corners crisp while the image scales */
+}
+
+.pin__media:not(.is-loaded):not(.is-failed) {
+  background: linear-gradient(100deg, var(--skeleton) 30%, var(--skeleton-shine) 50%, var(--skeleton) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.pin__open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.pin__open:focus-visible {
+  outline-offset: -3px;
+  border-radius: 16px;
+}
+
+.pin__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.7s var(--ease-out);
+}
+
+.is-loaded .pin__img {
+  opacity: 1;
+}
+
+.pin__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0) 45%),
+    rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.pin__id {
+  padding: 5px 9px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.pin__expand {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #202020;
+  transform: scale(0.85);
+  transition: transform 0.3s var(--ease-spring);
+}
+
+@media (hover: hover) {
+  .pin:hover .pin__overlay {
+    opacity: 1;
+  }
+
+  .pin:hover .pin__expand {
+    transform: scale(1);
+  }
+
+  .pin:hover .is-loaded .pin__img {
+    transform: scale(1.04);
+  }
+}
+
+.pin__open:focus-visible .pin__overlay {
+  opacity: 1;
+}
+
+.pin__fallback {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--muted);
+}
+
+/* ---------- Caption row ---------- */
+
+.pin__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 2px 0;
+  min-width: 0;
+}
+
+.pin__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pin__author {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-soft);
+  transition: color 0.2s ease;
+}
+
+.pin:hover .pin__author {
+  color: var(--text);
+}
+
+/* Compact like button used inside pins */
+.like-btn--compact {
+  flex: none;
+  gap: 6px;
+  min-width: 40px;
+  min-height: 34px;
+  padding: 0 11px;
+  font-size: 12.5px;
+  background: transparent;
+}
+
+.like-btn--compact .like-btn__icon {
+  font-size: 13px;
+}
+
+.like-btn--compact .like-btn__plus {
+  top: -10px;
+  right: 6px;
+}
+
+/* ---------- Skeleton tile ---------- */
+
+.pin-skeleton__media {
+  aspect-ratio: var(--ratio);
+  border-radius: 16px;
+}
+
+.pin-skeleton__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 2px 0;
+}
+
+.pin-skeleton__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.pin-skeleton__line {
+  width: 55%;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 519px) {
+  .pin__media,
+  .pin-skeleton__media,
+  .pin__open:focus-visible {
+    border-radius: 12px;
+  }
+
+  .pin__avatar {
+    display: none;
+  }
+
+  .pin__author {
+    font-size: 12px;
+  }
+
+  .like-btn--compact {
+    padding: 0 9px;
+  }
+
+  .pin__overlay {
+    display: none;
+  }
+}

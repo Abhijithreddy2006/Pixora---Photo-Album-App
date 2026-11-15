@@ -75,14 +75,84 @@
   }
 }
 
+/* ---------- Controls: live counter + layout toggle ---------- */
+
+.gallery__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.gallery__controls .gallery__live {
+  margin-top: 0;
+}
+
+.layout-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--card);
+}
+
+.layout-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.layout-toggle__btn:hover {
+  color: var(--text);
+}
+
+.layout-toggle__btn.is-active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* ---------- Body: grid (wide) or feed (one column) ---------- */
+
+.gallery__body {
+  margin: 0 auto;
+}
+
+.gallery__body--grid {
+  max-width: 1680px;
+}
+
+.gallery__body--feed {
+  max-width: var(--feed-width);
+}
+
+.gallery__status {
+  max-width: var(--feed-width);
+  margin: 0 auto;
+}
+
+.gallery__status:not(:empty) {
+  margin-top: clamp(28px, 4vw, 48px);
+}
+
 /* ---------- The one-column feed ---------- */
 
 .gallery__feed {
   display: flex;
   flex-direction: column;
   gap: clamp(28px, 5vw, 56px);
-  max-width: var(--feed-width);
-  margin: 0 auto;
 }
 
 .gallery__sentinel {

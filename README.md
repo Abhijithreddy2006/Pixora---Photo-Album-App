@@ -2,7 +2,7 @@
 
 > *Every frame tells a story.*
 
-PIXORA is a one-column photography feed built with **React + Vite**. It streams real photographs from the
+PIXORA is a Pinterest-style photography gallery built with **React + Vite**: a masonry grid of photos on one page that keeps growing as you scroll. A one-column **Feed** view, the layout the assignment requires, is one click away. It streams real photographs from the
 [Lorem Picsum](https://picsum.photos) API, loads more pages automatically as you scroll (IntersectionObserver),
 and gives every photograph its own like counter.
 
@@ -23,7 +23,7 @@ design, a light/dark theme, a full-screen lightbox, skeleton loading, error reco
 | Append, never replace | New pages are concatenated onto the existing list; duplicate ids are ignored |
 | Stop on an empty array | An empty page sets the feed to `done`, the observer is removed and no more requests are made |
 | Loading / network / HTTP errors | Skeletons + loader while fetching; network failures, non-2xx responses and malformed JSON all show an error panel with **Try again** |
-| One-column layout | A centred single-column feed at every screen size |
+| One-column layout | The **Feed** view (Grid/Feed toggle in the gallery header) is a centred single-column feed at every screen size. The default **Grid** view is a Pinterest-style masonry layout, added as a design enhancement |
 | Thumbs-up + counter per photo | Font Awesome `faThumbsUp` with a count that starts at `0` |
 | +1 on every click, independent counters | Likes are stored per photo id (`{ [id]: count }`), separate from the photo list, so loading more pages never resets them |
 
@@ -35,6 +35,7 @@ design, a light/dark theme, a full-screen lightbox, skeleton loading, error reco
 - **No auto-retry loops:** after an error, loading pauses until the user presses **Try again**.
 
 ### Enhancements
+- **Pinterest-style masonry grid** (the default view): 2 columns on phones, up to 6 on wide screens. Each photo goes into the shortest column based on its known aspect ratio, so the layout is known before images load, and photos already on screen never move when a new page is appended. The Grid/Feed choice is saved.
 - Editorial hero with a scroll-to-gallery button
 - Live counter showing how many photographs and pages are loaded
 - Full-screen **lightbox**: previous/next, ← → keys, Esc, swipe on touch, focus trap, scroll lock, liking from inside the lightbox, a link to the original, and it loads more pages as you near the end
@@ -123,8 +124,11 @@ pixora/
 │   ├── components/
 │   │   ├── Navbar.jsx         # sticky nav, theme toggle, info, mobile menu
 │   │   ├── Hero.jsx
-│   │   ├── Gallery.jsx        # feed, sentinel and IntersectionObserver
-│   │   ├── PhotoCard.jsx      # memoised card: image, author, id, like button
+│   │   ├── Gallery.jsx        # grid/feed switch, sentinel and IntersectionObserver
+│   │   ├── MasonryGrid.jsx    # shortest-column masonry layout
+│   │   ├── PinCard.jsx        # memoised grid tile: image, author, like button
+│   │   ├── LayoutToggle.jsx   # Grid / Feed switch
+│   │   ├── PhotoCard.jsx      # memoised feed card: image, author, id, like button
 │   │   ├── LikeButton.jsx     # Font Awesome thumbs-up, +1 per click
 │   │   ├── ImageLightbox.jsx
 │   │   ├── SkeletonLoader.jsx
@@ -139,6 +143,7 @@ pixora/
 │   │   └── Footer.jsx
 │   ├── hooks/
 │   │   ├── useInfinitePhotos.js   # pagination state machine
+│   │   ├── useColumnCount.js      # responsive column count (ResizeObserver)
 │   │   ├── useModal.js            # Esc, focus trap, scroll lock, focus restore
 │   │   └── useTheme.js
 │   ├── services/
@@ -146,7 +151,7 @@ pixora/
 │   ├── utils/scroll.js            # scrolling that respects reduced motion
 │   └── styles/
 │       ├── global.css             # design tokens (light and dark), base styles, shared UI
-│       ├── navbar.css  hero.css  gallery.css  photoCard.css
+│       ├── navbar.css  hero.css  gallery.css  photoCard.css  masonry.css
 │       ├── lightbox.css           # lightbox and info dialog
 │       └── footer.css
 ├── vite.config.js
@@ -157,6 +162,7 @@ pixora/
 
 ## How to verify (for reviewers)
 
+0. The gallery opens in **Grid** view. Switch to **Feed** in the gallery header to see the one-column layout the assignment requires. Infinite scroll, likes and the lightbox work the same in both.
 1. `npm run dev`, then open the app. DevTools → Network → filter `v2/list` shows exactly one request for `page=1`.
 2. Scroll down. `page=2`, `page=3`, … are requested one at a time as you reach the bottom, and the counter in the gallery header goes up by 30 each time.
 3. Click a 👍 several times. That photo's count goes up by 1 per click and the others stay unchanged. Scroll on to load more pages; the counts stay the same.
