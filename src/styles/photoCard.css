@@ -1,0 +1,314 @@
+.photo-card {
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow 0.4s var(--ease-out), transform 0.4s var(--ease-out), background-color 0.35s ease;
+  animation: card-in 0.6s var(--ease-out) both;
+}
+
+.photo-card:hover,
+.photo-card:focus-within {
+  box-shadow: var(--shadow-lg);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Frame ---------- */
+
+/*
+ * The frame keeps the photograph's natural aspect ratio (no distortion, no
+ * cropping) and reserves its space before the image arrives (no layout shift).
+ * Very tall portraits are capped at ~82vh by narrowing the frame instead of
+ * cropping it; the card's background fills the space beside them.
+ */
+.photo-card__frame {
+  position: relative;
+  width: min(100%, calc(82vh * var(--ratio)));
+  aspect-ratio: var(--ratio);
+  margin: 0 auto;
+  background: var(--skeleton);
+  overflow: hidden;
+}
+
+.photo-card__frame:not(.is-loaded):not(.is-failed) {
+  background: linear-gradient(100deg, var(--skeleton) 30%, var(--skeleton-shine) 50%, var(--skeleton) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.photo-card__open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+
+.photo-card__open:focus-visible {
+  outline-offset: -4px;
+  border-radius: 0;
+}
+
+.photo-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 0.7s ease, transform 0.9s var(--ease-out);
+}
+
+.is-loaded .photo-card__img {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.photo-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 18px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0) 38%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.photo-card__view {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  color: #202020;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transform: translateY(6px);
+  transition: transform 0.4s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .photo-card:hover .is-loaded .photo-card__img {
+    transform: scale(1.03);
+  }
+
+  .photo-card:hover .photo-card__overlay {
+    opacity: 1;
+  }
+
+  .photo-card:hover .photo-card__view {
+    transform: translateY(0);
+  }
+}
+
+.photo-card__open:focus-visible .photo-card__overlay {
+  opacity: 1;
+}
+
+.photo-card__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Meta row ---------- */
+
+.photo-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px 20px;
+}
+
+.photo-card__credit {
+  min-width: 0;
+}
+
+.photo-card__label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.photo-card__author {
+  margin-top: 3px;
+  font-family: var(--font-serif);
+  font-size: clamp(18px, 2.2vw, 21px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+  transition: color 0.3s ease;
+}
+
+.photo-card:hover .photo-card__author,
+.photo-card:focus-within .photo-card__author {
+  color: var(--text);
+}
+
+.photo-card__aside {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+}
+
+.photo-card__id {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
+}
+
+.photo-card:hover .photo-card__id {
+  color: var(--accent);
+}
+
+/* ---------- Like button ---------- */
+
+.like-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-soft);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.like-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.like-btn:active {
+  transform: scale(0.94);
+}
+
+.like-btn--liked {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.like-btn__icon {
+  display: inline-flex;
+  font-size: 15px;
+  transition: transform 0.25s var(--ease-spring);
+}
+
+.photo-card:hover .like-btn__icon {
+  transform: rotate(-8deg);
+}
+
+.like-btn__icon--pop {
+  animation: like-pop 0.45s var(--ease-spring);
+}
+
+@keyframes like-pop {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+  35% {
+    transform: scale(1.45) rotate(-14deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.like-btn__count {
+  min-width: 1ch;
+}
+
+.like-btn__plus {
+  position: absolute;
+  top: -4px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  pointer-events: none;
+  animation: like-float 0.8s var(--ease-out) forwards;
+}
+
+@keyframes like-float {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 560px) {
+  .photo-card {
+    border-radius: var(--radius-md);
+  }
+
+  .photo-card__meta {
+    padding: 14px 16px 16px;
+    gap: 12px;
+  }
+
+  .photo-card__aside {
+    gap: 10px;
+  }
+
+  .photo-card__id {
+    display: none;
+  }
+
+  .like-btn {
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 380px) {
+  .photo-card__label {
+    letter-spacing: 0.12em;
+  }
+}
