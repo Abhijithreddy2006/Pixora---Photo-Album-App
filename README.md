@@ -72,7 +72,7 @@ No backend, database, state library or paid API.
 Requirements: **Node.js 18+** and npm.
 
 ```bash
-git clone <your-repo-url> pixora
+git clone https://github.com/Abhijithreddy2006/Pixora---Photo-Album-App.git pixora
 cd pixora
 npm install
 ```
@@ -186,5 +186,5 @@ _Screenshots to add before submission: save them as `docs/screenshots/light.png`
 
 ## Repository
 
-- GitHub: `https://github.com/<your-username>/pixora` *(update after publishing)*
+- GitHub: [Abhijithreddy2006/Pixora---Photo-Album-App](https://github.com/Abhijithreddy2006/Pixora---Photo-Album-App)
 - License: MIT for the code. Photographs belong to their credited authors and are served by Lorem Picsum.
